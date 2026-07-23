@@ -3,10 +3,23 @@ package com.example.Back.auth.service;
 import com.example.Back.auth.dto.AuthResponse;
 import com.example.Back.auth.dto.LoginRequest;
 import com.example.Back.auth.dto.RegisterRequest;
+import com.example.Back.auth.entity.User;
+import com.example.Back.auth.repository.UserRepository;
+import com.example.Back.common.security.RefreshTokenService;
+import com.example.Back.common.security.jwt.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     // TODO(Can): Gerekli bağımlılıkları (@RequiredArgsConstructor ile) inject et:
     // - UserRepository
@@ -15,54 +28,93 @@ public class AuthService {
     // - RefreshTokenService (refresh token işlemleri için)
 
     public void register(RegisterRequest request) {
+
+        if (userRepository.findByUsername(request.getUsername()).isPresent() ||
+                userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Kullanıcı adı veya email zaten kullanılıyor");
+        }
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setRole("CUSTOMER");
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+
         // ÖRNEK ŞABLON (Aşağıdaki adımlara tam uyumlu syntax örneği):
-        // if (userRepository.findByUsername(request.getUsername()).isPresent() ||       // 1. adım
-        //     userRepository.findByEmail(request.getEmail()).isPresent()) {             // 1. adım
-        //     throw new RuntimeException("Kullanıcı adı veya email zaten kullanılıyor"); // 1. adım
+        // if (userRepository.findByUsername(request.getUsername()).isPresent() || // 1.
+        // adım
+        // userRepository.findByEmail(request.getEmail()).isPresent()) { // 1. adım
+        // throw new RuntimeException("Kullanıcı adı veya email zaten kullanılıyor"); //
+        // 1. adım
         // }
-        // User user = new User();                                                       // 2. adım
-        // user.setUsername(request.getUsername());                                      // 2. adım
-        // user.setEmail(request.getEmail());                                            // 2. adım
-        // user.setPasswordHash(passwordEncoder.encode(request.getPassword()));          // 3. adım
-        // user.setRole("CUSTOMER");                                                     // 4. adım
-        // user.setFailedLoginAttempts(0);                                               // 4. adım
-        // userRepository.save(user);                                                    // 5. adım
+        // User user = new User(); // 2. adım
+        // user.setUsername(request.getUsername()); // 2. adım
+        // user.setEmail(request.getEmail()); // 2. adım
+        // user.setPasswordHash(passwordEncoder.encode(request.getPassword())); // 3.
+        // adım
+        // user.setRole("CUSTOMER"); // 4. adım
+        // user.setFailedLoginAttempts(0); // 4. adım
+        // userRepository.save(user); // 5. adım
         //
-        // TODO(Can): 1. request.getUsername() veya request.getEmail() veritabanında var mı kontrol et. Varsa hata fırlat (örn. RuntimeException).
-        
+        // TODO(Can): 1. request.getUsername() veya request.getEmail() veritabanında var
+        // mı kontrol et. Varsa hata fırlat (örn. RuntimeException).
+
         // TODO(Can): 2. Yeni bir User entity'si oluştur. username ve email'i set et.
-        
-        // TODO(Can): 3. passwordEncoder.encode(request.getPassword()) ile şifreyi hashleyip User objesine set et.
-        
+
+        // TODO(Can): 3. passwordEncoder.encode(request.getPassword()) ile şifreyi
+        // hashleyip User objesine set et.
+
         // TODO(Can): 4. role = "CUSTOMER", failedLoginAttempts = 0 olarak ayarla.
-        
+
         // TODO(Can): 5. userRepository.save(user) ile veritabanına kaydet.
     }
 
     public AuthResponse login(LoginRequest request) {
+
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+            user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
+            userRepository.save(user);
+            throw new RuntimeException("Hatalı şifre");
+        }
+        user.setFailedLoginAttempts(0);
+        userRepository.save(user);
+        String token = jwtTokenProvider.generateAccessToken(user.getUsername());
+        return AuthResponse.builder().accessToken(token).build();
         // ÖRNEK ŞABLON (Aşağıdaki adımlara tam uyumlu syntax örneği):
-        // User user = userRepository.findByUsername(request.getUsername())              // 1. adım
-        //         .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));      // 1. adım
-        // if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) { // 2. adım
-        //     user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);            // 2. adım
-        //     userRepository.save(user);                                                 // 2. adım
-        //     throw new RuntimeException("Hatalı şifre");                                // 2. adım
+        // User user = userRepository.findByUsername(request.getUsername()) // 1. adım
+        // .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı")); // 1. adım
+        // if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash()))
+        // { // 2. adım
+        // user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1); // 2. adım
+        // userRepository.save(user); // 2. adım
+        // throw new RuntimeException("Hatalı şifre"); // 2. adım
         // }
-        // user.setFailedLoginAttempts(0);                                               // 3. adım
-        // userRepository.save(user);                                                    // 3. adım
-        // String token = jwtTokenProvider.generateAccessToken(user.getUsername());      // 4. adım
-        // return AuthResponse.builder().accessToken(token).build();                     // 5. adım
+        // user.setFailedLoginAttempts(0); // 3. adım
+        // userRepository.save(user); // 3. adım
+        // String token = jwtTokenProvider.generateAccessToken(user.getUsername()); //
+        // 4. adım
+        // return AuthResponse.builder().accessToken(token).build(); // 5. adım
         //
-        // TODO(Can): 1. userRepository.findByUsername ile kullanıcıyı bul. Bulunamazsa hata fırlat.
-        
-        // TODO(Can): 2. passwordEncoder.matches(request.getPassword(), user.getPasswordHash()) ile şifreler eşleşiyor mu kontrol et. Eşleşmiyorsa failedLoginAttempts'i artır, kaydet ve hata fırlat.
-        
+        // TODO(Can): 1. userRepository.findByUsername ile kullanıcıyı bul. Bulunamazsa
+        // hata fırlat.
+
+        // TODO(Can): 2. passwordEncoder.matches(request.getPassword(),
+        // user.getPasswordHash()) ile şifreler eşleşiyor mu kontrol et. Eşleşmiyorsa
+        // failedLoginAttempts'i artır, kaydet ve hata fırlat.
+
         // TODO(Can): 3. Şifre doğruysa: failedLoginAttempts = 0 yapıp güncelle.
-        
-        // TODO(Can): 4. jwtTokenProvider.generateAccessToken(user.getUsername()) ile access token üret.
-        
-        // TODO(Can): 5. AuthResponse objesi oluşturup içine access token'ı koyup return et.
-        // Not: Refresh token Controller katmanında cookie olarak eklenecek, burada üretmene gerek yok (veya burada üretip bir Wrapper class ile de dönebilirsin, tasarım sana kalmış. Tavsiyem Controller'da RefreshTokenService çağırmak).
-        return null;
+
+        // TODO(Can): 4. jwtTokenProvider.generateAccessToken(user.getUsername()) ile
+        // access token üret.
+
+        // TODO(Can): 5. AuthResponse objesi oluşturup içine access token'ı koyup return
+        // et.
+        // Not: Refresh token Controller katmanında cookie olarak eklenecek, burada
+        // üretmene gerek yok (veya burada üretip bir Wrapper class ile de dönebilirsin,
+        // tasarım sana kalmış. Tavsiyem Controller'da RefreshTokenService çağırmak).
+
     }
 }
