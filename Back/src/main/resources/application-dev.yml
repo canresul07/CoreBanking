@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/corebank
+    username: corebank_user
+    password: ${POSTGRES_PASSWORD:change_me_local_dev_only}
+
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_ROOT_USER:corebank_admin}:${MONGO_ROOT_PASSWORD:change_me_local_dev_only}@localhost:27017/corebank_history?authSource=admin
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD:change_me_local_dev_only}
+
+logging:
+  level:
+    com.example.Back: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG

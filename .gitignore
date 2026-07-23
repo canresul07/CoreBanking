@@ -1,0 +1,81 @@
+# =========================
+# GÜVENLİK VE GİZLİ VERİLER (Kritik)
+# =========================
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.jks
+credentials.json
+client_secret.json
+docker-compose.override.yml
+corebank.md
+
+# =========================
+# SPRING BOOT / JAVA (Backend)
+# =========================
+Back/target/
+Back/bin/
+Back/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.log
+
+# =========================
+# ANGULAR / NODE.JS (Frontend)
+# =========================
+Front/node_modules/
+Front/dist/
+Front/tmp/
+Front/out-tsc/
+Front/bazel-out/
+Front/.npm/
+Front/.angular/
+Front/.cache/
+Front/coverage/
+
+# =========================
+# IDE VE EDİTÖR DOSYALARI
+# =========================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+.factorypath
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# =========================
+# İŞLETİM SİSTEMİ DOSYALARI
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# =========================
+# DİĞER
+# =========================
+*.bak
+*.tmp
+*.temp
+npm-debug.log
+yarn-error.log
+
+
