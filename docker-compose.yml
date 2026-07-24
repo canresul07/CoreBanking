@@ -52,6 +52,10 @@ services:
       - MONGO_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
+      - SPRING_DATA_MONGODB_URI=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/corebank_history?authSource=admin
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=corebank_history
     depends_on:
       postgres:
         condition: service_healthy

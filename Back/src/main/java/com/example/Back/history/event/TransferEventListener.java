@@ -25,23 +25,10 @@ public class TransferEventListener {
                 .fromAccountId(transfer.getFromAccountId())
                 .toAccountId(transfer.getToAccountId())
                 .amount(transfer.getAmount())
+                .status(transfer.getStatus())
+                .idempotencyKey(transfer.getIdempotencyKey())
                 .timestamp(transfer.getCreatedAt())
                 .build();
         transactionEventRepository.save(transactionEvent);
     }
-
-    // TODO(Can): Transfer başarılı olduğunda (Transaction commitlendiğinde)
-    // MongoDB'ye kayıt atan metodu yaz:
-    // 1. @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    // anotasyonunu ekle.
-    // 2. Metot imzasını public void handleTransferCompleted(TransferCompletedEvent
-    // event) şeklinde yaz.
-    // 3. (İsteğe bağlı ekstra bilgi) @Async anotasyonu eklenirse MongoDB kayıt
-    // işlemi asenkron (arka planda) yapılır. Şimdilik senkron da yapabilirsin.
-    // 4. Metot içinde: event.getTransfer() ile transfer bilgisini al.
-    // 5. TransactionEvent.builder() ile yeni bir TransactionEvent oluştur ve
-    // fieldlarını doldur (timestamp için event.getTransfer().getCreatedAt() veya
-    // LocalDateTime.now() kullan).
-    // 6. transactionEventRepository.save() ile MongoDB'ye kaydet!
-
 }
