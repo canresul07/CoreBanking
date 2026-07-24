@@ -69,9 +69,10 @@ public class AccountService {
         if (balanceStr != null) {
             return new BigDecimal(balanceStr);
         }
-        
+
         Account account = accountRepository.findById(accountId).orElseThrow();
-        redisTemplate.opsForValue().set("account:balance:" + accountId, account.getBalance().toString(), 10, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("account:balance:" + accountId, account.getBalance().toString(), 10,
+                TimeUnit.MINUTES);
         return account.getBalance();
     }
 }
