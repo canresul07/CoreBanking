@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, UUID> {
-    // TODO(Can): Add a method to find all loans by accountId
+    List<Loan> findByAccountId(UUID accountId);
 }

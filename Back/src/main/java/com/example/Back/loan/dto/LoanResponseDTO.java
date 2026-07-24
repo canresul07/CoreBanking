@@ -23,4 +23,14 @@ public class LoanResponseDTO {
     public void setStatus(LoanStatus status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public static LoanResponseDTO from(com.example.Back.loan.entity.Loan loan) {
+        LoanResponseDTO dto = new LoanResponseDTO();
+        dto.setId(loan.getId());
+        dto.setAccountId(loan.getAccountId());
+        dto.setAmount(loan.getAmount());
+        dto.setStatus(loan.getStatus());
+        dto.setCreatedAt(loan.getCreatedAt());
+        return dto;
+    }
 }

@@ -11,3 +11,14 @@
 -- updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 -- TODO(Can): Add foreign key constraint for account_id referencing accounts(id)
+
+CREATE TABLE loans (
+    id UUID PRIMARY KEY,
+    account_id UUID NOT NULL,
+    amount NUMERIC(19, 4) NOT NULL,
+    interest_rate NUMERIC(5, 2) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts (id)
+);
