@@ -3,11 +3,6 @@
     <div>
       <h1 class="text-3xl font-bold text-slate-800">Hesaplarım</h1>
       <p class="text-slate-500 mt-1">Tüm vadesiz ve vadeli hesaplarınız.</p>
-<div class="max-w-6xl mx-auto space-y-6">
-  <div class="flex justify-between items-center mb-8">
-    <div>
-      <h1 class="text-3xl font-bold text-slate-800">Hesaplarım</h1>
-      <p class="text-slate-500 mt-1">Tüm vadesiz ve vadeli hesaplarınız.</p>
     </div>
     <button (click)="createAccount()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium shadow-lg shadow-emerald-200 transition-all cursor-pointer">
       Yeni Hesap Aç
@@ -40,7 +35,7 @@
             <p class="text-sm text-slate-500 mb-1">Kullanılabilir Bakiye</p>
             <p class="text-3xl font-bold text-slate-800">{{ acc.balance | currency:acc.currency:'symbol':'1.2-2' }}</p>
           </div>
-          <a routerLink="/transfer" class="text-emerald-600 font-medium hover:text-emerald-700 text-sm flex items-center">
+          <a routerLink="/transactions/transfer" class="text-emerald-600 font-medium hover:text-emerald-700 text-sm flex items-center">
             Para Gönder 
             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
           </a>

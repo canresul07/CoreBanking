@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 export interface AccountResponse {
   id: string;
   accountNumber: string;
@@ -19,7 +21,7 @@ export interface AccountCreateRequest {
 })
 export class AccountService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/accounts';
+  private apiUrl = `${environment.apiUrl}/api/accounts`;
 
   getAccounts(): Observable<AccountResponse[]> {
     return this.http.get<AccountResponse[]>(this.apiUrl);

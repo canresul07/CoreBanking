@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoanService } from '../../../core/services/loan.service';
@@ -15,6 +15,7 @@ export class LoanApplication implements OnInit {
   private fb = inject(FormBuilder);
   private loanService = inject(LoanService);
   private accountService = inject(AccountService);
+  private cdr = inject(ChangeDetectorRef);
 
   loanForm: FormGroup;
   accountId: string | null = null;
@@ -55,6 +56,7 @@ export class LoanApplication implements OnInit {
   onSubmit() {
     if (this.loanForm.invalid || !this.accountId) {
       this.errorMessage = 'Lütfen geçerli bir tutar girin ve hesabınızın olduğundan emin olun.';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -69,11 +71,13 @@ export class LoanApplication implements OnInit {
         this.successMessage = 'Kredi başvurunuz başarıyla alındı. Onay bekliyor.';
         this.errorMessage = '';
         this.loanForm.reset({ amount: 50000, term: '12 Ay' });
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = 'Başvuru sırasında bir hata oluştu.';
         this.successMessage = '';
         console.error(err);
+        this.cdr.detectChanges();
       }
     });
   }

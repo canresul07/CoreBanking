@@ -56,7 +56,10 @@ export class TransferForm implements OnInit {
     this.successMessage = '';
 
     const idempotencyKey = crypto.randomUUID();
-    const payload = this.transferForm.value;
+    const payload = {
+      ...this.transferForm.value,
+      idempotencyKey
+    };
 
     this.http.post(this.apiUrl, payload, {
       headers: {

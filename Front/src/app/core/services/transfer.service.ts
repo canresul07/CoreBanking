@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 export interface TransferRequestDTO {
   fromAccountNumber: string;
   toAccountNumber: string;
@@ -21,7 +23,7 @@ export interface TransferResponseDTO {
 })
 export class TransferService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/transfers';
+  private apiUrl = `${environment.apiUrl}/api/transfers`;
 
   executeTransfer(request: TransferRequestDTO, idempotencyKey: string): Observable<TransferResponseDTO> {
     return this.http.post<TransferResponseDTO>(this.apiUrl, request, {

@@ -1,1 +1,41 @@
-<p>transaction-history works!</p>
+<div class="max-w-6xl mx-auto space-y-6">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">Tüm İşlemler</h1>
+      <p class="text-slate-500 mt-1">Hesaplarınıza ait tüm para giriş ve çıkışları.</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-sm border border-emerald-50 overflow-hidden">
+    <div *ngIf="loading" class="p-8 text-center text-slate-500">
+      Yükleniyor...
+    </div>
+
+    <div *ngIf="!loading && transactions.length === 0" class="p-8 text-center text-slate-500">
+      Henüz herhangi bir işleminiz bulunmuyor.
+    </div>
+
+    <div *ngIf="!loading && transactions.length > 0" class="divide-y divide-slate-100">
+      <div *ngFor="let t of transactions" class="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center"
+               [ngClass]="t.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+            </svg>
+          </div>
+          <div>
+            <p class="font-medium text-slate-800">Para Transferi</p>
+            <p class="text-sm text-slate-500">{{ t.timestamp | date:'medium' }}</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="font-bold text-slate-800">{{ t.amount | currency:'TRY':'symbol':'1.2-2' }}</p>
+          <p class="text-xs font-medium" [ngClass]="t.status === 'COMPLETED' ? 'text-emerald-600' : 'text-amber-600'">
+            {{ t.status }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

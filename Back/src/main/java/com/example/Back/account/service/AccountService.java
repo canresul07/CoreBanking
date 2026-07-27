@@ -36,7 +36,7 @@ public class AccountService {
                 .userId(userId)
                 .accountNumber(accountNumber)
                 .currency(request.getCurrency())
-                .balance(new BigDecimal("10000.00"))
+                .balance(BigDecimal.ZERO)
                 .build();
         accountRepository.save(account);
         return AccountResponse.from(account);
