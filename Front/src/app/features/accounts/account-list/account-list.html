@@ -1,1 +1,51 @@
-<p>account-list works!</p>
+<div class="max-w-6xl mx-auto space-y-6">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">Hesaplarım</h1>
+      <p class="text-slate-500 mt-1">Tüm vadesiz ve vadeli hesaplarınız.</p>
+<div class="max-w-6xl mx-auto space-y-6">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">Hesaplarım</h1>
+      <p class="text-slate-500 mt-1">Tüm vadesiz ve vadeli hesaplarınız.</p>
+    </div>
+    <button (click)="createAccount()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-medium shadow-lg shadow-emerald-200 transition-all cursor-pointer">
+      Yeni Hesap Aç
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6" *ngIf="!loading">
+    <div *ngIf="accounts.length === 0" class="col-span-1 md:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-emerald-50 text-center py-12">
+      <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      </div>
+      <h3 class="text-lg font-semibold text-slate-800 mb-1">Hesabınız Yok</h3>
+      <p class="text-slate-500 mb-6">İşlem yapabilmek için hemen yeni bir hesap açın.</p>
+    </div>
+
+    <div *ngFor="let acc of accounts; let i = index" class="bg-white rounded-2xl p-6 shadow-sm border border-emerald-50 relative overflow-hidden group hover:shadow-md transition-all">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+      
+      <div class="relative z-10">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">Vadesiz {{ acc.currency }}</span>
+            <h3 class="text-lg font-semibold text-slate-800 mt-3">Hesap {{ i + 1 }}</h3>
+            <p class="text-slate-500 font-mono text-sm mt-1">{{ acc.accountNumber }}</p>
+          </div>
+        </div>
+        
+        <div class="flex justify-between items-end">
+          <div>
+            <p class="text-sm text-slate-500 mb-1">Kullanılabilir Bakiye</p>
+            <p class="text-3xl font-bold text-slate-800">{{ acc.balance | currency:acc.currency:'symbol':'1.2-2' }}</p>
+          </div>
+          <a routerLink="/transfer" class="text-emerald-600 font-medium hover:text-emerald-700 text-sm flex items-center">
+            Para Gönder 
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

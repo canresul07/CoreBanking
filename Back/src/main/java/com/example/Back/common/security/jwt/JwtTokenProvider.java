@@ -20,11 +20,12 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration-ms}")
     private int jwtExpirationMs;
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(String username, String role) {
 
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
         return Jwts.builder()
                 .subject(username)
+                .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key)

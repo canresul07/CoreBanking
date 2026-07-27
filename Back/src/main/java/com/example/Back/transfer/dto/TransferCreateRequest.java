@@ -9,11 +9,11 @@ import java.util.UUID;
 
 @Data
 public class TransferCreateRequest {
-    @NotNull(message = "Gönderici hesap (fromAccountId) zorunludur")
-    private UUID fromAccountId;
+    @NotBlank(message = "Gönderici hesap numarası zorunludur")
+    private String fromAccountNumber;
 
-    @NotNull(message = "Alıcı hesap (toAccountId) zorunludur")
-    private UUID toAccountId;
+    @NotBlank(message = "Alıcı hesap numarası zorunludur")
+    private String toAccountNumber;
 
     @NotNull(message = "Tutar (amount) zorunludur")
     @DecimalMin(value = "0.01", message = "Tutar sıfırdan büyük olmalıdır")

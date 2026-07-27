@@ -1,18 +1,54 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { TokenStorageService } from './token-storage.service';
-import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/api/auth`;
+  private http = inject(HttpClient);
+  private tokenStorage = inject(TokenStorageService);
   private router = inject(Router);
+  
+  private apiUrl = 'http://localhost:8080/api/auth';
+  private loggedIn = new BehaviorSubject<boolean>(!!this.tokenStorage.getToken());
+  
+  isLoggedIn$ = this.loggedIn.asObservable();
 
-  constructor(private http: HttpClient, private tokenStorage: TokenStorageService) { }
+  private decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  getRole(): string | null {
+    const token = this.tokenStorage.getToken();
+    if (token) {
+      const decoded: any = this.decodeToken(token);
+      return decoded?.role || decoded?.roles || null;
+    }
+    return null;
+  }
+
+  isAdmin(): boolean {
+    const role = this.getRole();
+    return role === 'ADMIN' || role === 'ROLE_ADMIN';
+  }
+
+  getUsername(): string {
+    const token = this.tokenStorage.getToken();
+    if (token) {
+      const decoded: any = this.decodeToken(token);
+      return decoded?.sub || 'Kullanıcı';
+    }
+    return 'Kullanıcı';
+  }
 
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(

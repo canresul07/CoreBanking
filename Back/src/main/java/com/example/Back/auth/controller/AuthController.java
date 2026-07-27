@@ -21,9 +21,9 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<java.util.Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
-        return ResponseEntity.ok("Kullanıcı başarıyla kaydedildi.");
+        return ResponseEntity.ok(java.util.Map.of("message", "Kullanıcı başarıyla kaydedildi."));
     }
 
     @PostMapping("/login")

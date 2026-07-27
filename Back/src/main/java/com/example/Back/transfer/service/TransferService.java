@@ -34,15 +34,15 @@ public class TransferService {
             return TransferResponse.from(existingTransfer.get());
         }
 
-        String lockKey = "lock:account:" + request.getFromAccountId();
+        String lockKey = "lock:account:transfer:" + request.getFromAccountNumber();
 
         if (!lockService.acquireLock(lockKey, 5)) {
             throw new RuntimeException("Sistem meşgul, aynı hesaptan işlem yapılıyor");
         }
 
         try {
-            Optional<Account> fromAccountOpt = accountRepository.findById(request.getFromAccountId());
-            Optional<Account> toAccountOpt = accountRepository.findById(request.getToAccountId());
+            Optional<Account> fromAccountOpt = accountRepository.findByAccountNumber(request.getFromAccountNumber());
+            Optional<Account> toAccountOpt = accountRepository.findByAccountNumber(request.getToAccountNumber());
 
             if (fromAccountOpt.isEmpty() || toAccountOpt.isEmpty()) {
                 throw new RuntimeException("Hesap bulunamadı");
@@ -63,8 +63,8 @@ public class TransferService {
 
             Transfer transfer = Transfer.builder()
                     .idempotencyKey(idempotencyKey)
-                    .fromAccountId(request.getFromAccountId())
-                    .toAccountId(request.getToAccountId())
+                    .fromAccountId(fromAccount.getId())
+                    .toAccountId(toAccount.getId())
                     .amount(request.getAmount())
                     .status("COMPLETED")
                     .build();

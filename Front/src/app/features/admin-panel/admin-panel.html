@@ -1,0 +1,89 @@
+<div class="max-w-6xl mx-auto space-y-6">
+  
+  <div>
+    <h1 class="text-3xl font-bold text-slate-800">Yönetim Paneli</h1>
+    <p class="text-slate-500 mt-1">Sistem üzerindeki onay bekleyen işlemleri buradan yönetebilirsiniz.</p>
+  </div>
+
+  <div class="border-b border-emerald-100 flex space-x-8">
+    <button (click)="activeTab = 'cards'" 
+      [class.border-emerald-600]="activeTab === 'cards'"
+      [class.text-emerald-600]="activeTab === 'cards'"
+      [class.border-transparent]="activeTab !== 'cards'"
+      class="pb-4 font-medium border-b-2 hover:text-emerald-600 transition-colors">
+      Sanal Kart Onayları
+      <span *ngIf="pendingCards.length > 0" class="ml-2 bg-emerald-100 text-emerald-700 py-0.5 px-2 rounded-full text-xs">{{ pendingCards.length }}</span>
+    </button>
+    <button (click)="activeTab = 'loans'"
+      [class.border-emerald-600]="activeTab === 'loans'"
+      [class.text-emerald-600]="activeTab === 'loans'"
+      [class.border-transparent]="activeTab !== 'loans'"
+      class="pb-4 font-medium border-b-2 hover:text-emerald-600 transition-colors">
+      Kredi Onayları
+      <span *ngIf="pendingLoans.length > 0" class="ml-2 bg-emerald-100 text-emerald-700 py-0.5 px-2 rounded-full text-xs">{{ pendingLoans.length }}</span>
+    </button>
+  </div>
+
+  <!-- Kart Onayları -->
+  <div *ngIf="activeTab === 'cards'" class="bg-white rounded-2xl p-6 shadow-sm border border-emerald-50">
+    <div *ngIf="pendingCards.length === 0" class="text-center py-8 text-slate-500">
+      Bekleyen sanal kart talebi bulunmuyor.
+    </div>
+
+    <div class="overflow-x-auto" *ngIf="pendingCards.length > 0">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-emerald-50/50 text-emerald-800 text-sm">
+            <th class="p-4 rounded-tl-xl">Kullanıcı</th>
+            <th class="p-4">Kart No</th>
+            <th class="p-4">Limit</th>
+            <th class="p-4 rounded-tr-xl text-right">İşlem</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          <tr *ngFor="let card of pendingCards" class="border-b border-emerald-50 hover:bg-emerald-50/30 transition-colors">
+            <td class="p-4 font-medium">{{ card.cardholderName }}</td>
+            <td class="p-4 font-mono text-slate-600">{{ card.cardNumber }}</td>
+            <td class="p-4 text-emerald-600 font-medium">{{ card.limitAmount | currency:'TRY':'symbol':'1.2-2' }}</td>
+            <td class="p-4 flex justify-end space-x-2">
+              <button (click)="approveCard(card.id)" class="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors">Onayla</button>
+              <button (click)="rejectCard(card.id)" class="px-4 py-1.5 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">Reddet</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Kredi Onayları -->
+  <div *ngIf="activeTab === 'loans'" class="bg-white rounded-2xl p-6 shadow-sm border border-emerald-50">
+    <div *ngIf="pendingLoans.length === 0" class="text-center py-8 text-slate-500">
+      Bekleyen kredi başvurusu bulunmuyor.
+    </div>
+
+    <div class="overflow-x-auto" *ngIf="pendingLoans.length > 0">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-emerald-50/50 text-emerald-800 text-sm">
+            <th class="p-4 rounded-tl-xl">ID</th>
+            <th class="p-4">Tutar</th>
+            <th class="p-4">Faiz Oranı</th>
+            <th class="p-4 rounded-tr-xl text-right">İşlem</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          <tr *ngFor="let loan of pendingLoans" class="border-b border-emerald-50 hover:bg-emerald-50/30 transition-colors">
+            <td class="p-4 font-mono text-xs text-slate-400">{{ loan.id }}</td>
+            <td class="p-4 font-medium text-slate-800">{{ loan.amount | currency:'TRY':'symbol':'1.2-2' }}</td>
+            <td class="p-4 text-slate-600">%{{ loan.interestRate }}</td>
+            <td class="p-4 flex justify-end space-x-2">
+              <button (click)="approveLoan(loan.id)" class="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors">Onayla</button>
+              <button (click)="rejectLoan(loan.id)" class="px-4 py-1.5 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">Reddet</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

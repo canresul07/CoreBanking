@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface TransactionEventRepository extends MongoRepository<TransactionEvent, String> {
-    List<TransactionEvent> findByFromAccountIdOrToAccountIdOrderByTimestampDesc(UUID fromAccountId, UUID toAccountId);
+    List<TransactionEvent> findByFromAccountIdOrderByTimestampDesc(UUID fromAccountId);
+    List<TransactionEvent> findByFromAccountIdInOrToAccountIdInOrderByTimestampDesc(List<UUID> fromIds, List<UUID> toIds);
 }

@@ -19,6 +19,6 @@ public class TransactionHistoryController {
     @GetMapping("/{accountId}")
     public ResponseEntity<List<TransactionEvent>> getHistory(@PathVariable UUID accountId) {
         // Hem gönderen hem alan olduğu tüm transfer geçmişini getir.
-        return ResponseEntity.ok(historyRepository.findByFromAccountIdOrToAccountIdOrderByTimestampDesc(accountId, accountId));
+        return ResponseEntity.ok(historyRepository.findByFromAccountIdInOrToAccountIdInOrderByTimestampDesc(List.of(accountId), List.of(accountId)));
     }
 }

@@ -7,6 +7,9 @@ import com.example.Back.auth.entity.User;
 import com.example.Back.auth.repository.UserRepository;
 import com.example.Back.common.security.RefreshTokenService;
 import com.example.Back.common.security.jwt.JwtTokenProvider;
+import com.example.Back.card.service.CardService;
+import com.example.Back.account.service.AccountService;
+import com.example.Back.account.dto.AccountCreateRequest;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final CardService cardService;
+    private final AccountService accountService;
 
     // TODO(Can): Gerekli bağımlılıkları (@RequiredArgsConstructor ile) inject et:
     // - UserRepository
@@ -37,9 +42,17 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setRole("CUSTOMER");
+        user.setRole("ROLE_USER");
         user.setFailedLoginAttempts(0);
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        // Create default physical card
+        cardService.createPhysicalCardForUser(user);
+
+        // Create default Ana Hesap (Main Account)
+        AccountCreateRequest accReq = new AccountCreateRequest();
+        accReq.setCurrency("TRY");
+        accountService.createAccount(user.getId(), accReq);
 
         // ÖRNEK ŞABLON (Aşağıdaki adımlara tam uyumlu syntax örneği):
         // if (userRepository.findByUsername(request.getUsername()).isPresent() || // 1.
@@ -81,7 +94,7 @@ public class AuthService {
         }
         user.setFailedLoginAttempts(0);
         userRepository.save(user);
-        String token = jwtTokenProvider.generateAccessToken(user.getUsername());
+        String token = jwtTokenProvider.generateAccessToken(user.getUsername(), user.getRole());
         return AuthResponse.builder().accessToken(token).build();
         // ÖRNEK ŞABLON (Aşağıdaki adımlara tam uyumlu syntax örneği):
         // User user = userRepository.findByUsername(request.getUsername()) // 1. adım

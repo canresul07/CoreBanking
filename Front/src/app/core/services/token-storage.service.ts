@@ -10,40 +10,54 @@ export class TokenStorageService {
 
   // TODO(Can): Implement getToken() method to return access token from memory or localStorage
   getToken(): string | null {
-    const token = localStorage.getItem('token');
-    return token;
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
   }
 
   // TODO(Can): Implement saveToken() method to store access token
   saveToken(token: string): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('isAuthenticated', 'true');
-    
-    // Basit bir şekilde JWT içerisinden rolü çözümlüyoruz (eğer varsa)
-    const role = this.getRoleFromToken(token);
-    localStorage.setItem('role', role);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('token', token);
+      localStorage.setItem('isAuthenticated', 'true');
+      
+      // Basit bir şekilde JWT içerisinden rolü çözümlüyoruz (eğer varsa)
+      const role = this.getRoleFromToken(token);
+      localStorage.setItem('role', role);
+    }
   }
 
   // TODO(Can): Implement clearToken() method to remove token on logout
   clearToken(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('role');
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('role');
+    }
 
     this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
-    return localStorage.getItem('isAuthenticated') === 'true';
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('isAuthenticated') === 'true';
+    }
+    return false;
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('refreshToken');
+    }
+    return null;
   }
 
   setRefreshToken(refreshToken: string): void {
-    localStorage.setItem('refreshToken', refreshToken);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
   }
   
   private getRoleFromToken(token: string): string {

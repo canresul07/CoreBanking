@@ -1,16 +1,17 @@
+import { RouterModule } from '@angular/router';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
 export class Register {
-
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -39,5 +40,4 @@ export class Register {
       }
     });
   }
-
 }

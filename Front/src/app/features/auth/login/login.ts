@@ -1,16 +1,17 @@
+import { RouterModule } from '@angular/router';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrl: './login.css'
 })
 export class Login {
-
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -19,7 +20,7 @@ export class Login {
 
   public loginForm = this.fb.group({
     username: ['', Validators.required],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(5)]]
   });
 
   login() {
@@ -36,7 +37,4 @@ export class Login {
       }
     });
   }
-
-
-
 }
