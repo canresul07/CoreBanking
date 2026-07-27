@@ -42,7 +42,7 @@ public class Account {
     @Column(name = "currency", nullable = false)
     private String currency;
 
-    @Column(name = "balance", nullable = false, columnDefinition = "NUMERIC(19, 4) DEFAULT 0.00")
+    @Column(name = "balance", nullable = false, precision = 19, scale = 4)
     private BigDecimal balance;
 
     @CreationTimestamp

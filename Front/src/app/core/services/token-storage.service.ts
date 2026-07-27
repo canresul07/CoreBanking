@@ -1,0 +1,59 @@
+import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TokenStorageService {
+
+  private router = inject(Router);
+
+  // TODO(Can): Implement getToken() method to return access token from memory or localStorage
+  getToken(): string | null {
+    const token = localStorage.getItem('token');
+    return token;
+  }
+
+  // TODO(Can): Implement saveToken() method to store access token
+  saveToken(token: string): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('isAuthenticated', 'true');
+    
+    // Basit bir şekilde JWT içerisinden rolü çözümlüyoruz (eğer varsa)
+    const role = this.getRoleFromToken(token);
+    localStorage.setItem('role', role);
+  }
+
+  // TODO(Can): Implement clearToken() method to remove token on logout
+  clearToken(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('role');
+
+    this.router.navigate(['/login']);
+  }
+
+  isAuthenticated(): boolean {
+    return localStorage.getItem('isAuthenticated') === 'true';
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+
+  setRefreshToken(refreshToken: string): void {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
+  
+  private getRoleFromToken(token: string): string {
+    try {
+      const payload = token.split('.')[1];
+      const decoded = atob(payload);
+      const parsed = JSON.parse(decoded);
+      return parsed.role || 'user';
+    } catch (e) {
+      return 'user'; // Hata olursa varsayılan
+    }
+  }
+}
