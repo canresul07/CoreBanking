@@ -28,4 +28,10 @@ public class CardController {
     public ResponseEntity<List<CardDTO>> getMyCards(Authentication authentication) {
         return ResponseEntity.ok(cardService.getMyCards(authentication.getName()));
     }
+
+    @DeleteMapping("/{cardId}")
+    public ResponseEntity<Void> deleteCard(@PathVariable UUID cardId, Authentication authentication) {
+        cardService.deleteCard(cardId, authentication.getName());
+        return ResponseEntity.noContent().build();
+    }
 }

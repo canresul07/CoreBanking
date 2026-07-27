@@ -84,6 +84,21 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    public void deleteCard(UUID cardId, String username) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("Kart bulunamadı"));
+        
+        if (!card.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Bu kartı silme yetkiniz yok");
+        }
+        
+        if ("PHYSICAL".equals(card.getCardType())) {
+            throw new RuntimeException("Fiziksel kartlar silinemez");
+        }
+
+        cardRepository.delete(card);
+    }
+
     private String generateCardNumber() {
         StringBuilder sb = new StringBuilder("4532");
         for (int i = 0; i < 12; i++) {

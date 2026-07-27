@@ -1,5 +1,5 @@
 import { RouterModule } from '@angular/router';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -19,6 +19,7 @@ export class TransferForm implements OnInit {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
+  private cdr = inject(ChangeDetectorRef);
   private apiUrl = `${environment.apiUrl}/api/transfers`;
 
   public errorMessage = '';
@@ -66,14 +67,19 @@ export class TransferForm implements OnInit {
         'Idempotency-Key': idempotencyKey
       }
     }).pipe(
-      finalize(() => this.isLoading = false)
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      })
     ).subscribe({
       next: (res) => {
         this.successMessage = 'Transfer başarıyla gerçekleşti!';
         this.transferForm.reset({ fromAccountNumber: this.myAccounts.length > 0 ? this.myAccounts[0].accountNumber : '' });
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Transfer sırasında bir hata oluştu.';
+        this.cdr.detectChanges();
       }
     });
   }

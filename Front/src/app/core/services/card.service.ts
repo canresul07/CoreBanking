@@ -24,7 +24,11 @@ export class CardService {
     return this.http.get<Card[]>(`${this.apiUrl}/my`);
   }
 
-  requestVirtualCard(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/virtual`, {});
+  requestVirtualCard(): Observable<{message: string}> {
+    return this.http.post<{message: string}>(`${this.apiUrl}/virtual`, {});
+  }
+
+  deleteCard(cardId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${cardId}`);
   }
 }

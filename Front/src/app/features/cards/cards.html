@@ -32,62 +32,128 @@
     <p class="text-slate-500 mt-2">Sisteme kayıt olduğunuzda atanan kartınız bekleniyor veya yeni sanal kart oluşturabilirsiniz.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    
-    <div class="scene" *ngFor="let card of cards">
-      <div class="card-container" [class.flipped]="flippedCards.has(card.id)" (click)="flipCard(card.id)">
-        
-        <!-- Ön Yüz -->
-        <div class="card-face card-front p-6 flex flex-col justify-between">
-          <div class="flex justify-between items-start">
-            <h2 class="text-2xl font-bold tracking-wider italic text-white/90">NexBank</h2>
-            <div class="text-xs font-semibold px-2 py-1 rounded bg-white/20 text-white backdrop-blur-sm shadow-sm"
-                 [ngClass]="{'bg-emerald-500/50': card.status === 'ACTIVE', 'bg-amber-500/50': card.status === 'PENDING', 'bg-red-500/50': card.status === 'REJECTED'}">
-              {{ card.status === 'ACTIVE' ? 'Aktif' : (card.status === 'PENDING' ? 'Bekliyor' : card.status) }}
+  <div *ngIf="physicalCards.length > 0">
+    <h2 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Fiziksel Kartlar</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="scene" *ngFor="let card of physicalCards">
+        <div class="card-container" [class.flipped]="flippedCards.has(card.id)" (click)="flipCard(card.id)">
+          <!-- Ön Yüz -->
+          <div class="card-face card-front p-6 flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <h2 class="text-2xl font-bold tracking-wider italic text-white/90">NexBank</h2>
+              <div class="text-xs font-semibold px-2 py-1 rounded bg-white/20 text-white backdrop-blur-sm shadow-sm"
+                   [ngClass]="{'bg-emerald-500/50': card.status === 'ACTIVE', 'bg-amber-500/50': card.status === 'PENDING', 'bg-red-500/50': card.status === 'REJECTED'}">
+                {{ card.status === 'ACTIVE' ? 'Aktif' : (card.status === 'PENDING' ? 'Bekliyor' : card.status) }}
+              </div>
             </div>
-          </div>
-          
-          <div class="card-chip mt-2"></div>
-          
-          <div class="mt-4">
-            <p class="font-mono text-xl tracking-widest text-white/95 text-shadow">{{ formatCardNumber(card.cardNumber) }}</p>
-          </div>
-          
-          <div class="flex justify-between items-end mt-4">
-            <div>
-              <p class="text-[10px] text-white/70 uppercase tracking-wider mb-1">Kart Sahibi</p>
-              <p class="font-medium tracking-wide">{{ card.cardholderName }}</p>
-            </div>
-            <div>
-              <p class="text-[10px] text-white/70 uppercase tracking-wider mb-1">SKT</p>
-              <p class="font-medium tracking-wide">{{ card.expirationDate }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Arka Yüz -->
-        <div class="card-face card-back flex flex-col">
-          <div class="card-stripe"></div>
-          
-          <div class="px-6 mt-4 flex-1">
-            <div class="bg-white/80 h-10 w-full flex items-center justify-end px-4 text-slate-900 font-mono text-lg font-bold rounded shadow-inner">
-              {{ card.cvv }}
-            </div>
-            <p class="text-xs text-white/80 mt-2 text-center">Bu kartın tüm kullanım hakları NexBank A.Ş.'ye aittir.</p>
             
-            <div class="mt-4 pt-4 border-t border-white/20 flex justify-between items-center text-sm">
-              <span class="text-white/80">Kart Tipi</span>
-              <span class="font-semibold px-2 py-0.5 bg-white/10 rounded">{{ card.cardType === 'PHYSICAL' ? 'Fiziksel Kart' : 'Sanal Kart' }}</span>
+            <div class="card-chip mt-2"></div>
+            
+            <div class="mt-4">
+              <p class="font-mono text-xl tracking-widest text-white/95 text-shadow">{{ formatCardNumber(card.cardNumber) }}</p>
             </div>
-            <div class="flex justify-between items-center text-sm mt-2">
-              <span class="text-white/80">Limit</span>
-              <span class="font-semibold">{{ card.limitAmount | currency:'TRY':'symbol':'1.2-2' }}</span>
+            
+            <div class="flex justify-between items-end mt-4">
+              <div>
+                <p class="text-[10px] text-white/70 uppercase tracking-wider mb-1">Kart Sahibi</p>
+                <p class="font-medium tracking-wide">{{ card.cardholderName }}</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-white/70 uppercase tracking-wider mb-1">SKT</p>
+                <p class="font-medium tracking-wide">{{ card.expirationDate }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Arka Yüz -->
+          <div class="card-face card-back flex flex-col">
+            <div class="card-stripe"></div>
+            
+            <div class="px-6 mt-4 flex-1">
+              <div class="bg-white/80 h-10 w-full flex items-center justify-end px-4 text-slate-900 font-mono text-lg font-bold rounded shadow-inner">
+                {{ card.cvv }}
+              </div>
+              <p class="text-xs text-white/80 mt-2 text-center">Bu kartın tüm kullanım hakları NexBank A.Ş.'ye aittir.</p>
+              
+              <div class="mt-4 pt-4 border-t border-white/20 flex justify-between items-center text-sm">
+                <span class="text-white/80">Kart Tipi</span>
+                <span class="font-semibold px-2 py-0.5 bg-white/10 rounded">Fiziksel Kart</span>
+              </div>
+              <div class="flex justify-between items-center text-sm mt-2">
+                <span class="text-white/80">Limit</span>
+                <span class="font-semibold">{{ card.limitAmount | currency:'TRY':'symbol':'1.2-2' }}</span>
+              </div>
             </div>
           </div>
         </div>
-        
       </div>
     </div>
-    
+  </div>
+
+  <div *ngIf="virtualCards.length > 0" class="mt-12">
+    <h2 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Sanal Kartlar</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="scene" *ngFor="let card of virtualCards">
+        <div class="card-container" [class.flipped]="flippedCards.has(card.id)" (click)="flipCard(card.id)">
+          <!-- Ön Yüz -->
+          <div class="card-face card-front virtual p-6 flex flex-col justify-between">
+            <div class="flex justify-between items-start">
+              <h2 class="text-2xl font-bold tracking-wider italic text-white/90">NexBank</h2>
+              <div class="text-xs font-semibold px-2 py-1 rounded bg-white/20 text-white backdrop-blur-sm shadow-sm"
+                   [ngClass]="{'bg-emerald-500/50': card.status === 'ACTIVE', 'bg-amber-500/50': card.status === 'PENDING', 'bg-red-500/50': card.status === 'REJECTED'}">
+                {{ card.status === 'ACTIVE' ? 'Aktif' : (card.status === 'PENDING' ? 'Bekliyor' : card.status) }}
+              </div>
+            </div>
+            
+            <div class="card-chip mt-2 opacity-80"></div>
+            
+            <div class="mt-4">
+              <p class="font-mono text-xl tracking-widest text-white/95 text-shadow">{{ formatCardNumber(card.cardNumber) }}</p>
+            </div>
+            
+            <div class="flex justify-between items-end mt-4">
+              <div>
+                <p class="text-[10px] text-white/70 uppercase tracking-wider mb-1">Kart Sahibi</p>
+                <p class="font-medium tracking-wide">{{ card.cardholderName }}</p>
+              </div>
+              <div>
+                <p class="text-[10px] text-white/70 uppercase tracking-wider mb-1">SKT</p>
+                <p class="font-medium tracking-wide">{{ card.expirationDate }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Arka Yüz -->
+          <div class="card-face card-back virtual flex flex-col">
+            <div class="card-stripe"></div>
+            
+            <div class="px-6 mt-4 flex-1">
+              <div class="bg-white/80 h-10 w-full flex items-center justify-end px-4 text-slate-900 font-mono text-lg font-bold rounded shadow-inner">
+                {{ card.cvv }}
+              </div>
+              <p class="text-xs text-white/80 mt-2 text-center">İnternet alışverişleriniz için güvenli sanal kart.</p>
+              
+              <div class="mt-2 pt-2 border-t border-white/20 flex justify-between items-center text-sm">
+                <span class="text-white/80">Kart Tipi</span>
+                <span class="font-semibold px-2 py-0.5 bg-white/10 rounded">Sanal Kart</span>
+              </div>
+              <div class="flex justify-between items-center text-sm mt-1">
+                <span class="text-white/80">Limit</span>
+                <span class="font-semibold">{{ card.limitAmount | currency:'TRY':'symbol':'1.2-2' }}</span>
+              </div>
+              
+              <div class="mt-3 flex justify-center">
+                <button (click)="deleteVirtualCard(card.id); $event.stopPropagation()" class="bg-red-500/20 hover:bg-red-500/40 text-red-100 px-4 py-1.5 rounded-lg text-sm transition-colors border border-red-500/30 flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Kartı Sil
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
