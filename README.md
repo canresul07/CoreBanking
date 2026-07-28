@@ -3,6 +3,7 @@
   <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular"/>
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
   <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis"/>
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"/>
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/>
 </div>
 
@@ -24,6 +25,7 @@ This project isn't just a simple CRUD application; it addresses complex financia
 ### 2. High-Performance Architecture
 - **Event-Driven Modularity:** Modules are completely decoupled using Spring's `ApplicationEventPublisher`. For example, the `AtmController` doesn't know the `NotificationService` exists. It simply shouts `"ATM_DEPOSIT_EVENT"`, and the Notification system listens asynchronously. (Open/Closed Principle).
 - **Redis In-Memory Caching:** Account balances—the most frequently accessed data in banking—are cached in Redis to dramatically reduce PostgreSQL database load and improve response times to sub-milliseconds.
+- **MongoDB NoSQL Document Storage:** Financial transaction histories and high-volume logs are offloaded to MongoDB. This ensures the primary PostgreSQL database remains highly optimized and focused strictly on core relational operations.
 
 ### 3. Fortified Security
 - **Stateless JWT Architecture:** No sessions are stored on the server. Every request is verified via a cryptographically signed JSON Web Token (JWT), intercepted by a custom `JwtAuthenticationFilter`.
@@ -42,6 +44,7 @@ This project isn't just a simple CRUD application; it addresses complex financia
 **Backend:**
 - Java 21, Spring Boot 3 (Web, Data JPA, Security)
 - PostgreSQL (Primary Relational Database)
+- MongoDB (NoSQL Storage for Transaction History & Logs)
 - Redis (Caching & Distributed Locking)
 - Bucket4j (Rate Limiting)
 - JWT (io.jsonwebtoken)
