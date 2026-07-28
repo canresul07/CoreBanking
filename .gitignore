@@ -12,7 +12,11 @@ credentials.json
 client_secret.json
 docker-compose.override.yml
 corebank.md
-
+backex.md
+generate_backex.py
+backex.pdf
+append_prep.py
+generate_backex_v2.py
 # =========================
 # SPRING BOOT / JAVA (Backend)
 # =========================
