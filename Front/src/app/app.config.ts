@@ -8,11 +8,14 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes), 
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withInterceptors([errorInterceptor, authInterceptor]), withFetch())
+    provideHttpClient(withInterceptors([errorInterceptor, authInterceptor]), withFetch()),
+    provideCharts(withDefaultRegisterables())
   ]
 };

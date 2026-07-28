@@ -1,0 +1,149 @@
+<div class="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-mono">
+  <!-- ATM Machine Frame -->
+  <div class="w-full max-w-2xl bg-slate-800 rounded-3xl p-8 shadow-2xl border-4 border-slate-700 relative">
+    
+    <!-- ATM Screen -->
+    <div class="bg-blue-900 rounded-xl p-6 border-8 border-slate-900 shadow-inner h-[500px] flex flex-col relative overflow-hidden">
+      
+      <!-- Scanlines effect -->
+      <div class="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px]"></div>
+
+      <!-- Header -->
+      <div class="text-center mb-8 border-b-2 border-blue-500/30 pb-4">
+        <h1 class="text-3xl font-bold text-blue-100 tracking-widest text-shadow-glow">NEXBANK ATM</h1>
+        <p class="text-blue-300 text-sm mt-2">HOŞ GELDİNİZ / WELCOME</p>
+      </div>
+
+      <!-- Messages -->
+      <div *ngIf="errorMessage" class="bg-red-900/50 text-red-200 p-3 rounded mb-4 text-center border border-red-500/50 animate-pulse">
+        {{ errorMessage }}
+      </div>
+
+      <!-- LOGIN VIEW -->
+      <div *ngIf="view === 'LOGIN'" class="flex-1 flex flex-col items-center justify-center">
+        <p class="text-blue-200 mb-6 text-center">LÜTFEN KULLANICI ADI VE ŞİFRENİZİ GİRİNİZ</p>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="w-64 space-y-4">
+          <div>
+            <input type="text" formControlName="username" placeholder="KULLANICI ADI" 
+                   class="w-full bg-blue-950 border-2 border-blue-500 text-blue-100 px-4 py-3 text-center focus:outline-none focus:border-blue-300 uppercase rounded">
+          </div>
+          <div>
+            <input type="password" formControlName="password" placeholder="ŞİFRE (PIN)" 
+                   class="w-full bg-blue-950 border-2 border-blue-500 text-blue-100 px-4 py-3 text-center tracking-[1em] focus:outline-none focus:border-blue-300 rounded">
+          </div>
+          <button type="submit" [disabled]="loginForm.invalid" 
+                  class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded border-2 border-blue-400 focus:outline-none disabled:opacity-50 transition-colors mt-4">
+            GİRİŞ (ENTER)
+          </button>
+          
+          <button type="button" (click)="quit()" class="w-full text-blue-400 hover:text-blue-300 text-sm mt-4">
+            İptal (Cancel)
+          </button>
+        </form>
+      </div>
+
+      <!-- MENU VIEW -->
+      <div *ngIf="view === 'MENU'" class="flex-1 flex flex-col justify-between">
+        <p class="text-blue-200 text-center mb-6">LÜTFEN YAPMAK İSTEDİĞİNİZ İŞLEMİ SEÇİNİZ</p>
+        
+        <div class="flex-1 flex flex-col justify-center space-y-6">
+          <!-- Left side buttons -->
+          <div class="flex justify-between items-center px-4">
+            <button (click)="showDeposit()" class="bg-blue-800 hover:bg-blue-700 text-blue-100 px-6 py-4 rounded text-left w-48 border border-blue-500/50 flex items-center group">
+              <span class="mr-2 text-2xl group-hover:-translate-x-1 transition-transform">◄</span> PARA YATIRMA
+            </button>
+            <div class="text-blue-400 text-sm">Bakiyeniz: 
+              <span class="text-blue-200 block text-right font-bold">{{ accounts.length ? accounts[0].balance + ' TRY' : '...' }}</span>
+            </div>
+          </div>
+          
+          <!-- Right side buttons -->
+          <div class="flex justify-between items-center px-4">
+            <div></div>
+            <button (click)="showWithdraw()" class="bg-blue-800 hover:bg-blue-700 text-blue-100 px-6 py-4 rounded text-right w-48 border border-blue-500/50 flex items-center justify-end group">
+              PARA ÇEKME <span class="ml-2 text-2xl group-hover:translate-x-1 transition-transform">►</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-end px-4 mt-auto">
+          <button (click)="quit()" class="text-red-400 hover:text-red-300 flex items-center group">
+            <span class="mr-2 text-xl group-hover:-translate-x-1 transition-transform">◄</span> İADE (ÇIKIŞ)
+          </button>
+        </div>
+      </div>
+
+      <!-- DEPOSIT / WITHDRAW VIEW -->
+      <div *ngIf="view === 'DEPOSIT' || view === 'WITHDRAW'" class="flex-1 flex flex-col h-full">
+        <p class="text-blue-200 text-center mb-6">
+          {{ view === 'DEPOSIT' ? 'YATIRILACAK' : 'ÇEKİLECEK' }} TUTARI GİRİNİZ
+        </p>
+
+        <form *ngIf="!successMessage" [formGroup]="transactionForm" (ngSubmit)="view === 'DEPOSIT' ? onDeposit() : onWithdraw()" class="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full space-y-6">
+          
+          <div class="space-y-2">
+            <label class="text-blue-300 text-sm">HESAP SEÇİMİ</label>
+            <select formControlName="accountId" class="w-full bg-blue-950 border-2 border-blue-500 text-blue-100 px-4 py-3 focus:outline-none focus:border-blue-300 rounded appearance-none cursor-pointer">
+              <option *ngFor="let acc of accounts" [value]="acc.id">
+                {{ acc.accountNumber }} - {{ acc.balance }} TRY
+              </option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-blue-300 text-sm">TUTAR (TRY)</label>
+            <input type="number" formControlName="amount" min="10" step="10"
+                   class="w-full bg-blue-950 border-2 border-blue-500 text-blue-100 px-4 py-4 text-center text-2xl focus:outline-none focus:border-blue-300 rounded font-bold">
+          </div>
+
+          <div class="flex justify-between pt-8">
+            <button type="button" (click)="backToMenu()" class="text-yellow-400 hover:text-yellow-300 flex items-center group">
+              <span class="mr-2 text-xl group-hover:-translate-x-1 transition-transform">◄</span> İPTAL
+            </button>
+            <button type="submit" [disabled]="transactionForm.invalid" class="text-green-400 hover:text-green-300 flex items-center group disabled:opacity-50">
+              ONAYLA <span class="ml-2 text-xl group-hover:translate-x-1 transition-transform">►</span>
+            </button>
+          </div>
+        </form>
+
+        <div *ngIf="successMessage" class="flex-1 flex flex-col justify-center items-center">
+          <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-6">
+            <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl text-green-400 font-bold mb-2">İŞLEM BAŞARILI</h2>
+          <p class="text-blue-100 text-center mb-12">{{ successMessage }}</p>
+          
+          <div class="w-full flex justify-between px-4 mt-auto">
+            <button (click)="quit()" class="text-red-400 hover:text-red-300 flex items-center group">
+              <span class="mr-2 text-xl group-hover:-translate-x-1 transition-transform">◄</span> İADE (ÇIKIŞ)
+            </button>
+            <button (click)="backToMenu()" class="text-blue-400 hover:text-blue-300 flex items-center group">
+              ANA MENÜ <span class="ml-2 text-xl group-hover:translate-x-1 transition-transform">►</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Physical ATM Elements Below Screen -->
+    <div class="mt-8 grid grid-cols-3 gap-6">
+      <div class="col-span-1 bg-slate-900 h-8 rounded-full border-2 border-slate-600 relative overflow-hidden flex items-center shadow-inner">
+        <div class="w-16 h-1 bg-green-500 absolute left-4 animate-pulse"></div>
+      </div>
+      <div class="col-span-2">
+         <!-- Keypad Mockup -->
+         <div class="grid grid-cols-4 gap-2 w-48 ml-auto opacity-50">
+            <div class="h-6 bg-slate-600 rounded"></div>
+            <div class="h-6 bg-slate-600 rounded"></div>
+            <div class="h-6 bg-slate-600 rounded"></div>
+            <div class="h-6 bg-red-600/50 rounded"></div>
+            <!-- ... -->
+         </div>
+      </div>
+    </div>
+  </div>
+</div>

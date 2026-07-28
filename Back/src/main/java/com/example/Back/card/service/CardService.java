@@ -7,6 +7,8 @@ import com.example.Back.card.entity.Card;
 import com.example.Back.card.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationEventPublisher;
+import com.example.Back.card.event.CardApprovedEvent;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final Random random = new Random();
 
     public void createPhysicalCardForUser(User user) {
@@ -75,6 +78,8 @@ public class CardService {
                 .orElseThrow(() -> new RuntimeException("Kart bulunamadı"));
         card.setStatus("ACTIVE");
         cardRepository.save(card);
+        
+        eventPublisher.publishEvent(new CardApprovedEvent(this, card.getUser().getId(), card.getCardNumber()));
     }
 
     public void rejectCard(UUID cardId) {

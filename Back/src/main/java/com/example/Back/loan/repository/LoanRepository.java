@@ -7,7 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
+import com.example.Back.loan.entity.LoanStatus;
+
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, UUID> {
     List<Loan> findByAccountId(UUID accountId);
+    long countByStatus(LoanStatus status);
 }

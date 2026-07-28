@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardService, Card } from '../../core/services/card.service';
+import { ModalComponent } from '../../shared/components/modal/modal';
 
 @Component({
   selector: 'app-cards',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalComponent],
   templateUrl: './cards.html',
   styleUrl: './cards.css'
 })
@@ -19,6 +20,9 @@ export class Cards implements OnInit {
   isRequesting = false;
   successMessage: string | null = null;
   hasPendingCard = false;
+
+  isDeleteModalOpen = false;
+  cardToDelete: string | null = null;
 
   ngOnInit() {
     this.loadCards();
@@ -70,11 +74,18 @@ export class Cards implements OnInit {
     });
   }
 
-  deleteVirtualCard(cardId: string) {
-    if (confirm('Bu sanal kartı silmek istediğinize emin misiniz?')) {
-      this.cardService.deleteCard(cardId).subscribe({
+  confirmDelete(cardId: string) {
+    this.cardToDelete = cardId;
+    this.isDeleteModalOpen = true;
+  }
+
+  deleteVirtualCard() {
+    if (this.cardToDelete) {
+      this.cardService.deleteCard(this.cardToDelete).subscribe({
         next: () => {
           this.successMessage = 'Sanal kart başarıyla silindi.';
+          this.isDeleteModalOpen = false;
+          this.cardToDelete = null;
           this.loadCards();
           setTimeout(() => {
             this.successMessage = null;
@@ -84,6 +95,7 @@ export class Cards implements OnInit {
         error: (err) => {
           console.error(err);
           alert('Kart silinirken bir hata oluştu.');
+          this.isDeleteModalOpen = false;
         }
       });
     }

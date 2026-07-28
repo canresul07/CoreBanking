@@ -2,74 +2,218 @@
   <div class="flex justify-between items-center mb-8">
     <div>
       <h1 class="text-3xl font-bold text-slate-800">Hoş Geldin, <span class="capitalize text-emerald-700">{{ data.username }}</span></h1>
-      <p class="text-slate-500 mt-1">İşte hesaplarının güncel durumu ve özetin.</p>
+      <p class="text-slate-500 mt-1" *ngIf="data.role !== 'ADMIN'">İşte hesaplarının güncel durumu ve özetin.</p>
+      <p class="text-slate-500 mt-1" *ngIf="data.role === 'ADMIN'">Sistem genel istatistikleri ve yönetici özeti.</p>
     </div>
-    <div class="text-right">
+    <div class="text-right" *ngIf="data.role !== 'ADMIN'">
       <p class="text-sm text-slate-500 mb-1">Toplam Varlık</p>
       <p class="text-3xl font-bold text-slate-800">{{ data.totalBalance | currency:'TRY':'symbol':'1.2-2' }}</p>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 hover:shadow-md transition-shadow">
-      <div class="flex items-center space-x-4 mb-4">
-        <div class="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-        </div>
-        <h3 class="font-semibold text-slate-700">Kartlarım</h3>
+  <!-- ADMIN VIEW -->
+  <ng-container *ngIf="data.role === 'ADMIN'">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        <p class="text-sm text-slate-500 font-medium mb-1">Toplam Müşteri</p>
+        <p class="text-3xl font-bold text-slate-800">{{ data.totalUsers }}</p>
       </div>
-      <a routerLink="/cards" class="text-sm text-emerald-600 font-medium hover:text-emerald-700 flex items-center group">
-        Kartları Yönet
-        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-    </div>
-
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 hover:shadow-md transition-shadow">
-      <div class="flex items-center space-x-4 mb-4">
-        <div class="p-3 bg-teal-100 text-teal-600 rounded-xl">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        </div>
-        <h3 class="font-semibold text-slate-700">Para Transferi</h3>
+      
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        <p class="text-sm text-slate-500 font-medium mb-1">Onay Bekleyen Kartlar</p>
+        <p class="text-3xl font-bold text-amber-600">{{ data.pendingVirtualCards }}</p>
       </div>
-      <a routerLink="/transactions/transfer" class="text-sm text-emerald-600 font-medium hover:text-emerald-700 flex items-center group">
-        Yeni Transfer
-        <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-      </a>
-    </div>
-  </div>
 
-  <!-- Son İşlemler (Recent Transactions) -->
-  <div class="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-emerald-50">
-    <div class="flex justify-between items-center mb-6">
-      <h3 class="text-lg font-bold text-slate-800">Son İşlemler</h3>
-      <a routerLink="/transactions/history" class="text-sm text-emerald-600 font-medium hover:text-emerald-700">Tümünü Gör</a>
-    </div>
-    
-    <div *ngIf="data.recentTransactions.length === 0" class="text-center py-6 text-slate-500">
-      Henüz herhangi bir işleminiz bulunmuyor.
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        <p class="text-sm text-slate-500 font-medium mb-1">Onay Bekleyen Krediler</p>
+        <p class="text-3xl font-bold text-amber-600">{{ data.pendingLoans }}</p>
+      </div>
+      
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        <p class="text-sm text-slate-500 font-medium mb-1">Toplam İşlem Adedi</p>
+        <p class="text-3xl font-bold text-emerald-600">{{ data.totalTransactions }}</p>
+      </div>
+
     </div>
 
-    <div class="space-y-4" *ngIf="data.recentTransactions.length > 0">
-      <div *ngFor="let t of data.recentTransactions" class="flex items-center justify-between p-4 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-emerald-100">
-        <div class="flex items-center space-x-4">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center"
-               [ngClass]="t.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/>
+    <!-- Admin Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Bar Chart -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80">
+        <h3 class="font-semibold text-slate-700 mb-4">Sistem İstatistikleri</h3>
+        <canvas baseChart
+          [data]="systemStatsChartData"
+          [options]="barChartOptions"
+          [type]="'bar'">
+        </canvas>
+      </div>
+
+      <!-- Pie Chart for pending things -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-80 flex flex-col items-center">
+        <h3 class="font-semibold text-slate-700 w-full mb-4">Bekleyen İşlemler</h3>
+        <div class="h-64 w-full">
+          <canvas baseChart
+            [data]="systemStatsChartData"
+            [options]="pieChartOptions"
+            [type]="'pie'">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- USER VIEW -->
+  <ng-container *ngIf="data.role !== 'ADMIN'">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 hover:shadow-md transition-shadow">
+        <div class="flex items-center space-x-4 mb-4">
+          <div class="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+          </div>
+          <h3 class="font-semibold text-slate-700">Kartlarım</h3>
+        </div>
+        <a routerLink="/cards" class="text-sm text-emerald-600 font-medium hover:text-emerald-700 flex items-center group">
+          Kartları Yönet
+          <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 hover:shadow-md transition-shadow">
+        <div class="flex items-center space-x-4 mb-4">
+          <div class="p-3 bg-teal-100 text-teal-600 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <h3 class="font-semibold text-slate-700">Para Transferi</h3>
+        </div>
+        <a routerLink="/transactions/transfer" class="text-sm text-emerald-600 font-medium hover:text-emerald-700 flex items-center group">
+          Yeni Transfer
+          <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 hover:shadow-md transition-shadow">
+        <div class="flex items-center space-x-4 mb-4">
+          <div class="p-3 bg-blue-100 text-blue-600 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
             </svg>
           </div>
-          <div>
-            <p class="font-medium text-slate-800">Para Transferi</p>
-            <p class="text-sm text-slate-500">{{ t.timestamp | date:'medium' }}</p>
-          </div>
+          <h3 class="font-semibold text-slate-700">ATM Simülatörü</h3>
         </div>
-        <div class="text-right">
-          <p class="font-bold text-slate-800">{{ t.amount | currency:'TRY':'symbol':'1.2-2' }}</p>
-          <p class="text-xs font-medium" [ngClass]="t.status === 'COMPLETED' ? 'text-emerald-600' : 'text-amber-600'">
-            {{ t.status }}
-          </p>
-        </div>
+        <a routerLink="/atm" class="text-sm text-blue-600 font-medium hover:text-blue-700 flex items-center group">
+          ATM'ye Git
+          <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </a>
       </div>
     </div>
-  </div>
+
+    <!-- Layout for Transactions and Charts side-by-side -->
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Son İşlemler (Recent Transactions) -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-emerald-50 h-[400px] flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-lg font-bold text-slate-800">Son İşlemler</h3>
+          <a routerLink="/transactions/history" class="text-sm text-emerald-600 font-medium hover:text-emerald-700">Tümünü Gör</a>
+        </div>
+        
+        <div *ngIf="data.recentTransactions?.length === 0" class="text-center py-6 text-slate-500 flex-1">
+          Henüz herhangi bir işleminiz bulunmuyor.
+        </div>
+
+        <div class="space-y-4 overflow-y-auto flex-1 pr-2" *ngIf="data.recentTransactions && data.recentTransactions.length > 0">
+          <div *ngFor="let t of data.recentTransactions" 
+               (click)="openTransactionDetails(t)"
+               class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 cursor-pointer">
+            
+            <div class="flex items-center space-x-3">
+              <!-- Icons based on type -->
+              <!-- IN: Deposit or Transfer IN -->
+              <div *ngIf="t.type === 'ATM_DEPOSIT' || t.type === 'TRANSFER_IN'" class="w-10 h-10 rounded-full flex items-center justify-center bg-emerald-100 text-emerald-600">
+                <svg *ngIf="t.type === 'ATM_DEPOSIT'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                <svg *ngIf="t.type === 'TRANSFER_IN'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+              </div>
+              
+              <!-- OUT: Withdraw or Transfer OUT -->
+              <div *ngIf="t.type === 'ATM_WITHDRAW' || t.type === 'TRANSFER_OUT'" class="w-10 h-10 rounded-full flex items-center justify-center bg-red-100 text-red-500">
+                <svg *ngIf="t.type === 'ATM_WITHDRAW'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                <svg *ngIf="t.type === 'TRANSFER_OUT'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+              </div>
+
+              <div>
+                <p class="font-medium text-slate-800 text-sm">
+                  {{ t.type === 'ATM_DEPOSIT' ? 'ATM Para Yatırma' : (t.type === 'ATM_WITHDRAW' ? 'ATM Para Çekme' : (t.type === 'TRANSFER_IN' ? 'Gelen Transfer' : 'Giden Transfer')) }}
+                </p>
+                <p class="text-xs text-slate-500">{{ t.timestamp | date:'short' }}</p>
+              </div>
+            </div>
+            
+            <div class="text-right">
+              <p class="font-bold text-sm" [ngClass]="(t.type === 'ATM_DEPOSIT' || t.type === 'TRANSFER_IN') ? 'text-emerald-600' : 'text-red-500'">
+                {{ (t.type === 'ATM_DEPOSIT' || t.type === 'TRANSFER_IN') ? '+' : '-' }}{{ t.amount | currency:'TRY':'symbol':'1.2-2' }}
+              </p>
+              <p class="text-[10px] font-medium" [ngClass]="t.status === 'COMPLETED' ? 'text-emerald-600' : 'text-amber-600'">
+                {{ t.status }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Charts -->
+      <div *ngIf="data.accountStats && data.accountStats.length > 0" class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 h-[400px] flex flex-col items-center">
+        <h3 class="font-semibold text-slate-700 w-full mb-4">Hesap Bakiyeleri</h3>
+        <div class="flex-1 w-full flex items-center justify-center">
+          <div class="h-64 w-full">
+            <canvas baseChart
+              [data]="accountBalanceChartData"
+              [options]="pieChartOptions"
+              [type]="'pie'">
+            </canvas>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!(data.accountStats && data.accountStats.length > 0)" class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-50 h-[400px] flex flex-col items-center justify-center text-slate-500">
+        Henüz hesap bulunmuyor.
+      </div>
+      
+    </div>
+  </ng-container>
+
+  <!-- Transaction Details Modal -->
+  <app-modal 
+    [isOpen]="isTransactionModalOpen" 
+    title="İşlem Detayları" 
+    [showActions]="false"
+    (closed)="isTransactionModalOpen = false">
+    
+    <div class="space-y-4" *ngIf="selectedTransaction">
+      <div class="flex justify-between border-b pb-2">
+        <span class="text-slate-500">İşlem Tipi</span>
+        <span class="font-semibold text-slate-800">{{ selectedTransaction.type === 'ATM_DEPOSIT' ? 'ATM Para Yatırma' : (selectedTransaction.type === 'ATM_WITHDRAW' ? 'ATM Para Çekme' : 'Para Transferi') }}</span>
+      </div>
+      <div class="flex justify-between border-b pb-2">
+        <span class="text-slate-500">Tutar</span>
+        <span class="font-bold text-emerald-600">{{ selectedTransaction.amount | currency:'TRY':'symbol':'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between border-b pb-2">
+        <span class="text-slate-500">Tarih</span>
+        <span class="text-slate-800">{{ selectedTransaction.timestamp | date:'medium' }}</span>
+      </div>
+      <div class="flex justify-between border-b pb-2">
+        <span class="text-slate-500">Durum</span>
+        <span class="font-semibold" [ngClass]="selectedTransaction.status === 'COMPLETED' ? 'text-emerald-600' : 'text-amber-600'">{{ selectedTransaction.status }}</span>
+      </div>
+      <div class="flex justify-between pb-2" *ngIf="selectedTransaction.fromAccountId">
+        <span class="text-slate-500">Gönderen Hesap ID</span>
+        <span class="text-slate-800 text-xs">{{ selectedTransaction.fromAccountId }}</span>
+      </div>
+      <div class="flex justify-between pb-2" *ngIf="selectedTransaction.toAccountId">
+        <span class="text-slate-500">Alıcı Hesap ID</span>
+        <span class="text-slate-800 text-xs">{{ selectedTransaction.toAccountId }}</span>
+      </div>
+    </div>
+
+  </app-modal>
 </div>

@@ -55,10 +55,8 @@ export class AuthService {
       tap((res: any) => {
         if (res && res.accessToken) {
           this.tokenStorage.saveToken(res.accessToken);
+          this.loggedIn.next(true);
         }
-        // NOT: Refresh token Backend tarafından HttpOnly Cookie olarak gönderildiği için
-        // Frontend tarafında localStorage'a kaydetmemize gerek yoktur.
-        // Tarayıcı otomatik olarak bu cookie'yi saklar.
       })
     );
   }
@@ -69,8 +67,7 @@ export class AuthService {
 
   logout(): void {
     this.tokenStorage.clearToken();
-    // Normalde backend'in "/logout" endpointine istek atılıp HttpOnly cookie silinmeli.
-    // Şimdilik sadece frontend'i temizliyoruz.
+    this.loggedIn.next(false);
   }
 
   refreshToken(): Observable<any> {

@@ -59,5 +59,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin-panel/admin-panel').then(m => m.AdminPanel),
     canActivate: [authGuard] 
   },
+  { 
+    path: 'atm', 
+    loadComponent: () => import('./features/atm/atm').then(m => m.Atm),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: 'login' }
 ];

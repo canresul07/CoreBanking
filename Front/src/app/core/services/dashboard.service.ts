@@ -4,8 +4,15 @@ import { Observable } from 'rxjs';
 
 export interface DashboardData {
   username: string;
-  totalBalance: number;
-  recentTransactions: any[];
+  role?: string;
+  totalBalance?: number;
+  recentTransactions?: any[];
+  totalUsers?: number;
+  pendingVirtualCards?: number;
+  pendingLoans?: number;
+  totalTransactions?: number;
+  systemStats?: { [key: string]: number };
+  accountStats?: { accountName: string, balance: number }[];
 }
 
 @Injectable({
