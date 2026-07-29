@@ -1,3 +1,41 @@
+## Customer Panel
+
+<img width="1919" height="865" alt="Ekran görüntüsü 2026-07-28 174800" src="https://github.com/user-attachments/assets/9d2aa5a2-7c45-4071-95f2-c6729d3d8ce8" />
+
+<img width="1918" height="865" alt="Ekran görüntüsü 2026-07-28 174904" src="https://github.com/user-attachments/assets/d0e6205b-1e5a-4293-b544-4a8b62e54e21" />
+
+<img width="1915" height="864" alt="Ekran görüntüsü 2026-07-28 174813" src="https://github.com/user-attachments/assets/44bc9528-e7be-444f-9953-4618f6830351" />
+
+<img width="1916" height="862" alt="Ekran görüntüsü 2026-07-28 174920" src="https://github.com/user-attachments/assets/145da9ba-f563-4373-be97-86931c77e7fc" />
+
+<img width="1916" height="861" alt="Ekran görüntüsü 2026-07-28 174929" src="https://github.com/user-attachments/assets/949f0bf1-5632-4ea6-91c4-a5884f7256f3" />
+
+<img width="1916" height="862" alt="Ekran görüntüsü 2026-07-28 174434" src="https://github.com/user-attachments/assets/d83d5164-4522-405e-81d8-6513127b0b8c" />
+
+---
+
+## Admin Panel
+
+<img width="1919" height="842" alt="Ekran görüntüsü 2026-07-28 175133" src="https://github.com/user-attachments/assets/fdcd0a6f-1162-4de3-a9fc-b65af87a0338" />
+
+<img width="1914" height="863" alt="Ekran görüntüsü 2026-07-28 175147" src="https://github.com/user-attachments/assets/1a0e8dad-1522-4f39-a288-5a2ef33cc4ce" />
+
+
+
+---
+
+## ATM Simulator in website to deposit and withdraw  
+
+<img width="1277" height="863" alt="Ekran görüntüsü 2026-07-28 174944" src="https://github.com/user-attachments/assets/5f2295d0-69fb-40ac-a227-546d7ebcbdf0" />
+<img width="1276" height="865" alt="Ekran görüntüsü 2026-07-28 175015" src="https://github.com/user-attachments/assets/c35faa48-0e0b-4521-b70e-60ee5b887eed" />
+<img width="1275" height="865" alt="Ekran görüntüsü 2026-07-28 175026" src="https://github.com/user-attachments/assets/73582741-b80c-44b7-affc-eff528683c17" />
+
+
+
+
+
+---
+
 <div align="center">
   <img src="https://img.shields.io/badge/Spring_Boot-F2F4F9?style=for-the-badge&logo=spring-boot" alt="Spring Boot"/>
   <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular"/>
